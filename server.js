@@ -13,13 +13,18 @@ require('dotenv').config();  // eng yuqori qatorda, boshqa koddan oldin
 
 
 const app = express();
-app.use(cors());
+app.use(cors({
+    origin: 'https://uzbsmp.uz', // HTTPS ishlatilsa
+    methods: ['GET','POST','PUT','DELETE'], // kerakli HTTP metodlar
+    credentials: true // agar cookie yuborish kerak bo'lsa
+}));
+
 app.use(bodyParser.json());
 app.use(express.static('public'));
 
 // ================= PostgreSQL =================
 const pool = new Pool({
-  connectionString: process.env.DATABASE_URL || 'postgres://postgres:molporosat@localhost:5432/minecraft',
+  connectionString: process.env.DATABASE_URL,
   ssl: process.env.NODE_ENV === 'production'
     ? { rejectUnauthorized: false }
     : false
@@ -79,8 +84,8 @@ function createBot() {
   }
 
   bot = mineflayer.createBot({
-    host: '195.201.204.247',
-    port: 25591,
+    host: '176.114.72.37',
+    port: 25662,
     username: 'QQjon',
     version: '1.21'
   });
