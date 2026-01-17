@@ -228,7 +228,7 @@ const ITEMS = [
   { id: 4, name: 'Elytra', item: 'elytra', price: 10000, amount: 1 },
   { id: 5, name: 'Villager Spawn Egg', item: 'villager_spawn_egg', price: 10000, amount: 1 },
   { id: 6, name: 'Wind Charge (64)', item: 'wind_charge', price: 1500, amount: 64 },
-  { id: 7, name: 'End Crystal', item: 'end_crystal', price: 1500, amount: 1 },
+  { id: 7, name: 'End Crystal', item: 'end_crystal', price: 700, amount: 1 },
   { id: 8, name: 'Respawn Anchor', item: 'respawn_anchor', price: 1000, amount: 1 },
   { id: 9, name: 'Trident', item: 'trident', price: 5000, amount: 1},
   { id: 10, name: 'Nether Star', item: 'nether_star', price: 3000, amount: 1 },
