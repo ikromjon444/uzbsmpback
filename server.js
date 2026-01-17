@@ -84,10 +84,10 @@ function createBot() {
   }
 
   bot = mineflayer.createBot({
-    host: '176.114.72.37',
-    port: 25662,
+    host: 'mc.uzbsmp.uz',
+    port: 25705,
     username: 'QQjon',
-    version: '1.21'
+    version: '1.20.1'
   });
 
   bot.on('end', () => {
@@ -209,8 +209,8 @@ app.get('/me', auth, async (req, res) => {
 });
 
 // ================= MC STATUS =================
-const MC_HOST = '195.201.204.247'; 
-const MC_PORT = 25591;    
+const MC_HOST = 'mc.uzbsmp.uz'; 
+const MC_PORT = 25705;  
 app.get('/mc-status', async (req, res) => {
   try {
     const result = await status(MC_HOST, MC_PORT, { timeout: 3000 });
