@@ -1,3 +1,4 @@
+mana hozirda ishlatayotgan backend kodim
 const express = require('express');
 const bodyParser = require('body-parser');
 const cors = require('cors');
@@ -13,13 +14,18 @@ require('dotenv').config();  // eng yuqori qatorda, boshqa koddan oldin
 
 
 const app = express();
-app.use(cors());
+app.use(cors({
+    origin: 'https://uzbsmp.uz', // HTTPS ishlatilsa
+    methods: ['GET','POST','PUT','DELETE'], // kerakli HTTP metodlar
+    credentials: true // agar cookie yuborish kerak bo'lsa
+}));
+
 app.use(bodyParser.json());
 app.use(express.static('public'));
 
 // ================= PostgreSQL =================
 const pool = new Pool({
-  connectionString: process.env.DATABASE_URL || 'postgres://postgres:molporosat@localhost:5432/minecraft',
+  connectionString: process.env.DATABASE_URL,
   ssl: process.env.NODE_ENV === 'production'
     ? { rejectUnauthorized: false }
     : false
@@ -79,10 +85,10 @@ function createBot() {
   }
 
   bot = mineflayer.createBot({
-    host: '195.201.204.247',
-    port: 25591,
+    host: 'mc.uzbsmp.uz',
+    port: 25705,
     username: 'QQjon',
-    version: '1.21'
+    version: '1.20.1'
   });
 
   bot.on('end', () => {
@@ -205,7 +211,7 @@ app.get('/me', auth, async (req, res) => {
 
 // ================= MC STATUS =================
 const MC_HOST = 'mc.uzbsmp.uz'; 
-const MC_PORT = 25705;    
+const MC_PORT = 25705;  
 app.get('/mc-status', async (req, res) => {
   try {
     const result = await status(MC_HOST, MC_PORT, { timeout: 3000 });
@@ -220,7 +226,7 @@ const ITEMS = [
   { id: 1, name: 'Totem', item: 'totem_of_undying', price: 1500, amount: 1 },
   { id: 2, name: 'Enchanted Golden Apple', item: 'enchanted_golden_apple', price: 2500, amount: 1 },  
   { id: 3, name: 'Mace', item: 'mace', price: 20000, amount: 1 },
-  { id: 4, name: 'Elytra', item: 'elytra', price: 15000, amount: 1 },
+  { id: 4, name: 'Elytra', item: 'elytra', price: 10000, amount: 1 },
   { id: 5, name: 'Villager Spawn Egg', item: 'villager_spawn_egg', price: 10000, amount: 1 },
   { id: 6, name: 'Wind Charge (64)', item: 'wind_charge', price: 1500, amount: 64 },
   { id: 7, name: 'End Crystal', item: 'end_crystal', price: 700, amount: 1 },
