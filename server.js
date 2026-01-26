@@ -13,6 +13,8 @@ require('dotenv').config();  // eng yuqori qatorda, boshqa koddan oldin
 
 
 const app = express();
+app.set('trust proxy', true);
+
 app.use(cors({
     origin: 'https://uzbsmp.uz', // HTTPS ishlatilsa
     methods: ['GET','POST','PUT','DELETE'], // kerakli HTTP metodlar
@@ -123,15 +125,45 @@ const JWT_SECRET = process.env.JWT_SECRET;
 
 app.post('/register', async (req, res) => {
   const { username, password } = req.body;
-  if (!username || !password) return res.status(400).json({ success: false, message: 'Username va password kerak' });
-  const hash = await bcrypt.hash(password, 10);
+  if (!username || !password)
+    return res.status(400).json({ success:false, message:'Username va password kerak' });
+
+  const ip = req.ip; // 🔥 Render uchun to‘g‘ri
+
   try {
-    await pool.query('INSERT INTO users (username, password, coins, rank) VALUES ($1,$2,$3,$4)', [username, hash, 100, 'PLAYER']);
-    res.json({ success: true, message: 'Ro‘yxatdan o‘tildi' });
-  } catch {
-    res.status(400).json({ success: false, message: 'Username mavjud' });
+    const countRes = await pool.query(
+      'SELECT COUNT(*) FROM users WHERE register_ip = $1',
+      [ip]
+    );
+
+    if (parseInt(countRes.rows[0].count) >= 5) {
+      return res.status(403).json({
+        success:false,
+        message:'Bu IP dan maksimal 5 ta akkaunt ochish mumkin'
+      });
+    }
+
+    const hash = await bcrypt.hash(password, 12);
+
+    await pool.query(
+      `INSERT INTO users (username, password, coins, rank, register_ip)
+       VALUES ($1,$2,$3,$4,$5)`,
+      [username, hash, 100, 'PLAYER', ip]
+    );
+
+    res.json({ success:true, message:'Ro‘yxatdan o‘tildi' });
+
+  } catch (err) {
+    console.error(err);
+
+    if (err.code === '23505') {
+      return res.status(400).json({ success:false, message:'Username mavjud' });
+    }
+
+    res.status(500).json({ success:false, message:'Server xatosi' });
   }
 });
+
 app.post('/login', async (req, res) => {
   const { username, password } = req.body;
   if (!username || !password) return res.json({ success: false, message: 'Username va password kerak' });
